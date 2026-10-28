@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NFT Market</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --bg-color: var(--tg-theme-bg-color, #17212b);
+            --text-color: var(--tg-theme-text-color, #ffffff);
+            --hint-color: var(--tg-theme-hint-color, #708499);
+            --button-color: var(--tg-theme-button-color, #5288c1);
+            --button-text-color: var(--tg-theme-button-text-color, #ffffff);
+            --secondary-bg: var(--tg-theme-secondary-bg-color, #232e3c);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 16px;
+            padding-bottom: 80px; /* Отступ под нижнее меню */
+            transition: background-color 0.3s;
+        }
+
+        .header { margin-bottom: 24px; text-align: center; }
+        .header h1 { font-size: 24px; margin-bottom: 8px; }
+        .header p { color: var(--hint-color); font-size: 14px; }
+
+        .balance-card {
+            background: linear-gradient(135deg, var(--button-color), #2b5278);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .balance-card h2 { font-size: 14px; opacity: 0.8; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .balance-card .amount { font-size: 32px; font-weight: bold; }
+
+        .category-title { font-size: 18px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+        .product-card {
+            background-color: var(--secondary-bg);
+            border-radius: 16px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+        .product-card:active { transform: scale(0.95); }
+
+        .product-img {
+            width: 100px;
+            height: 100px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 48px;
+            margin-bottom: 12px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
+        }
+
+        .product-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+        .product-price { font-size: 13px; color: var(--hint-color); margin-bottom: 12px; }
+
+        .buy-btn {
+            background-color: var(--button-color);
+            color: var(--button-text-color);
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            width: 100%;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .buy-btn:active { opacity: 0.8; }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background-color: var(--secondary-bg);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center;
+            color: var(--hint-color); font-size: 10px; gap: 4px;
+        }
+        .nav-item.active { color: var(--button-color); }
+        .nav-item span.icon { font-size: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>🛒 NFT Market</h1>
+        <p>Покупай эксклюзивные подарки</p>
+    </div>
+
+    <div class="balance-card">
+        <h2>Ваш баланс</h2>
+        <div class="amount"><span id="user-balance">0</span> GRAM</div>
+    </div>
+
+    <div class="category-title">
+        <span>🔥</span> Популярное
+    </div>
+
+    <div class="grid">
+        <!-- Товар 1 -->
+        <div class="product-card" onclick="buyProduct('Мишка 🧸', 10)">
+            <div class="product-img">🧸</div>
+            <div class="product-title">Мишка</div>
+            <div class="product-price">10 GRAM</div>
+            <button class="buy-btn">Купить</button>
+        </div>
+
+        <!-- Товар 2 -->
+        <div class="product-card" onclick="buyProduct('Звезда ⭐', 5)">
+            <div class="product-img">⭐</div>
+            <div class="product-title">Звезда</div>
+            <div class="product-price">5 GRAM</div>
+            <button class="buy-btn">Купить</button>
+        </div>
+
+        <!-- Товар 3 -->
+        <div class="product-card" onclick="buyProduct('Букет 🌹', 3)">
+            <div class="product-img">🌹</div>
+            <div class="product-title">Букет</div>
+            <div class="product-price">3 GRAM</div>
+            <button class="buy-btn">Купить</button>
+        </div>
+
+        <!-- Товар 4 -->
+        <div class="product-card" onclick="buyProduct('Корона 👑', 25)">
+            <div class="product-img">👑</div>
+            <div class="product-title">Корона</div>
+            <div class="product-price">25 GRAM</div>
+            <button class="buy-btn">Купить</button>
+        </div>
+    </div>
+
+    <!-- Нижнее меню -->
+    <div class="bottom-nav">
+        <div class="nav-item active">
+            <span class="icon">🛍</span>
+            <span>Магазин</span>
+        </div>
+        <div class="nav-item">
+            <span class="icon">💰</span>
+            <span>Пополнить</span>
+        </div>
+        <div class="nav-item">
+            <span class="icon">👤</span>
+            <span>Профиль</span>
+        </div>
+    </div>
+
+    <script>
+        // Инициализация Telegram WebApp
+        let tg = window.Telegram.WebApp;
+        tg.expand(); // Открыть на весь экран
+        tg.ready();  // Сообщить Telegram, что приложение готово
+
+        // Красим хедер в цвет темы (для iOS)
+        tg.setHeaderColor('secondary_bg_color');
+
+        // Эмуляция баланса (в реальности он будет приходить с сервера)
+        document.getElementById('user-balance').innerText = "50";
+
+        // Функция покупки
+        function buyProduct(name, price) {
+            // Вибро-отклик (чтобы ощущалось как нативное приложение)
+            tg.HapticFeedback.impactOccurred('medium');
+
+            // Подтверждение
+            if (confirm(`Купить ${name} за ${price} GRAM?`)) {
+                // Отправляем данные боту
+                const data = {
+                    action: "buy",
+                    product: name,
+                    price: price
+                };
+                
+                tg.sendData(JSON.stringify(data));
+                
+                // Закрываем Mini App
+                tg.close();
+            }
+        }
+    </script>
+</body>
+</html>
